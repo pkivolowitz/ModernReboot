@@ -18,7 +18,6 @@
 #include <glm/gtc/constants.hpp>
 
 #include "shader.h"
-#include "main.h"
 
 using namespace std;
 using namespace glm;
@@ -172,12 +171,12 @@ void DisplayFunc()
 
 	float current_time = float(glutGet(GLUT_ELAPSED_TIME)) / 1000.0f;
 
-	glm::mat4 projection_matrix = glm::perspective(D2R(many_mode ? 60.0f : 30.0f), float(window_size.x) / float(window_size.y), 1.0f, 20.0f);
+	glm::mat4 projection_matrix = glm::perspective(D2R(many_mode ? 60.0f : 30.0f), float(window_size.x) / float(window_size.y), 1.0f, 30.0f);
 	glm::mat4 modelview_matrix;
 	
 	if (many_mode)
 		modelview_matrix = rotate(modelview_matrix, D2R(current_time * 10.0f) , vec3(0.0f , 1.0f , 0.0f));
-	modelview_matrix = glm::lookAt(glm::vec3(0.0f , 0.0f , 10.0f) , glm::vec3(0.0f) , glm::vec3(0.0f , 1.0f , 0.0f)) * modelview_matrix;
+	modelview_matrix = glm::lookAt(glm::vec3(2.0f * sin(current_time) , 0.0f , 10.0f) , glm::vec3(0.0f) , glm::vec3(0.0f , 1.0f , 0.0f)) * modelview_matrix;
 
 	mat4 mvp = projection_matrix * modelview_matrix;
 
@@ -186,9 +185,11 @@ void DisplayFunc()
 	glBindVertexArray(vertex_array_handle);
 	for (size_t counter = 0; counter < (many_mode ? positions.size() : 1); counter++)
 	{
-		mat4 m = translate(scale(mat4(), vec3(0.5f, 0.5f, 1.0f)), positions[counter]);
-		m = scale(m , vec3(scaling_factors[counter]));
-		m = rotate(m, D2R((60.0f + offsets[counter] / 10.0f) + offsets[counter]), vec3(0.0f, scaling_factors[counter], 1.0f));
+		mat4 m;
+//		m = translate(m , vec3(2.0f * sin(current_time) , 0.0f , 0.0f));
+//			translate(scale(mat4(), vec3(0.5f, 0.5f, 1.0f)), positions[counter]);
+//		m = scale(m , vec3(scaling_factors[counter]));
+//		m = rotate(m, D2R((60.0f + offsets[counter] / 10.0f) + offsets[counter]), vec3(0.0f, scaling_factors[counter], 1.0f));
 		mat4 mvpm = mvp * m;
 		glUniformMatrix4fv(simple_shader.mvp_handle, 1, GL_FALSE, glm::value_ptr(mvpm));
 		glDrawArrays(GL_TRIANGLES, 0, (GLsizei)sh_vertices.size());
@@ -200,12 +201,27 @@ void DisplayFunc()
 	GLReturnedError("DisplayFunc - on exit");
 }
 
+inline float D2R(float d)
+{
+	return d * glm::pi<float>() / 180.0f;
+}
+
 bool InitializeGeometry()
 {
 	GLReturnedError("InitializeGeometry - on entrance");
+	int number_of_slices = 60;
+
+	for (int i = 0; i < number_of_slices; i++)
+	{
+
+	}
+
 	sh_vertices.push_back(glm::vec2(0.0f, 1.0f));
 	sh_vertices.push_back(glm::vec2(-1.0f, -1.0f));
 	sh_vertices.push_back(glm::vec2(1.0f, -1.0f));
+	sh_vertices.push_back(vec2(1.0 , 1.0));
+	sh_vertices.push_back(sh_vertices[0]);
+	sh_vertices.push_back(sh_vertices[2]);
 
 	sh_colors.push_back(glm::vec3(1.0f, 0.0f, 0.0f));
 	sh_colors.push_back(glm::vec3(0.0f, 1.0f, 0.0f));
@@ -273,7 +289,7 @@ int main(int argc, char * argv[])
 		return 0;
 	}
 
-	const int count_of_triangles = 50000;
+	const int count_of_triangles = 50;
 
 	MakeRandomPositions(count_of_triangles);
 	MakeRandomOffsets(count_of_triangles);
