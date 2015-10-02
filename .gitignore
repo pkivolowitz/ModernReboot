@@ -41,3 +41,22 @@ $RECYCLE.BIN/
 Network Trash Folder
 Temporary Items
 .apdisk
+*.suo
+Debug/freeglut.dll
+*.dll
+Debug/ModernReboot.exe
+*.ilk
+Debug/ModernReboot.pdb
+*.sdf
+ModernReboot/Debug/main.obj
+*.log
+*.tlog
+ModernReboot/Debug/shader.obj
+*.idb
+ModernReboot/Debug/vc140.pdb
+*.obj
+ModernReboot/Release/vc140.pdb
+*.exe
+Release/ModernReboot.iobj
+*.ipdb
+Release/ModernReboot.pdb
