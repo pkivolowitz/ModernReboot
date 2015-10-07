@@ -60,3 +60,4 @@ ModernReboot/Release/vc140.pdb
 Release/ModernReboot.iobj
 *.ipdb
 Release/ModernReboot.pdb
+*.opensdf
